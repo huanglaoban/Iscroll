@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<style>
+			*{
+				margin: 0;padding: 0;
+			}
+			html,body{
+			
+				height: 100%;
+				overflow: hidden;
+			}
+			li{
+				color: deepskyblue;
+				height: 40px;
+				line-height: 40px;
+				border-bottom: 1px solid black;
+			}
+			
+			header,footer{
+				height:100px;
+				text-align: center;
+				line-height: 100px;
+				background: darkorange;
+				position: relative;
+				z-index: 100;
+			}
+			.wrap{
+				flex: 1;
+			}
+			.pull_down{
+				height: 40px;
+				text-align: center;
+				line-height: 40px;
+				background: deeppink;
+			}
+			.pull_up{
+				height: 40px;
+				text-align: center;
+				line-height: 40px;
+				background: deeppink;
+			}
+		</style>	
+		<script src="js/iscroll-probe.js"></script>	
+		<script src="js/jquery-1.12.4.min.js"></script>
+	</head>
+	<body>
+		<header>中国有嘻哈</header>
+		<div class="wrap">
+			<div class="scroll">
+				<div class="pull_down">下拉</div>
+				<ul>
+					<li>乱搞乱搞乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞</li>
+					<li>乱搞乱搞乱搞12</li>
+					<li>乱搞乱搞乱搞1</li>
+					<li>乱搞乱搞乱搞000</li>
+				</ul>
+				<div class="pull_up">上拉</div>
+			</div>
+		</div>
+		
+	</body>
+	<script>
+		
+		var headerheight=$("header").height();
+		var wrapheight=window.innerHeight-headerheight;
+		$(".wrap")[0].style.height=wrapheight+"px";
+		console.log($(".wrap").height())
+		var flag="";
+		
+		var myScroll=new IScroll(".wrap",{
+//			scrollbars:true,
+//			mouseWheel:true,
+			tap:true,
+			scrollX:true,
+			probeType: 2,
+			startY:-40,
+//			topOffset:40,
+		})
+		
+		var maxscrollY=myScroll.maxScrollY;
+		console.log(maxscrollY)
+		
+		myScroll.on("scroll",function(){
+			if(this.directionY==-1&&this.y>=0&&flag==""){
+				$(".pull_down").html("释放加载")
+				flag="up";
+			}
+			if(this.directionY==1&&flag=="up"&&this.y<0){
+				$(".pull_down").html("下拉");
+				flag="";
+			}
+//			
+//			if(flag==""){
+//				$(".pull_down")
+//			}
+			
+			
+			if(this.directionY==1&&this.y<maxscrollY-40&&flag==""){
+				this.maxscrollY=maxscrollY-40;
+				$(".pull_up").html("释放加载");
+				flag="down";
+			}
+			console.log(maxscrollY-40 +'++++...'+ this.y);
+			
+			if(this.directionY==-1&&this.y>maxscrollY-40&&flag=="down"){
+				this.maxscrollY=maxscrollY;
+				$(".pull_up").html("上拉");
+				flag="";
+			}
+			
+		})
+		
+		
+		
+		myScroll.on("scrollEnd",function(){
+			if(this.y<0&&this.y>-40){
+				this.scrollTo(0,-40,300)
+			}
+			if(flag=="up"){
+				$(".pull_down").html("加载中...")
+				
+				setTimeout(function(){
+					fresh1();
+				},1000)
+				flag="";
+			}
+			
+			if(flag="down"){
+				$(".pull_up").html("加载中...");
+				
+				setTimeout(function(){
+					fresh2();
+				},1000)
+				flag="";
+			
+			}
+			
+		})
+		
+		
+		function fresh1(){
+			$(".pull_down").html("下拉");
+			myScroll.scrollTo(0,-40,300);
+			myScroll.refresh();
+		}
+		
+		function fresh2(){
+			$(".pull_up").html("上拉");
+			myScroll.refresh();
+			maxscrollY=myScroll.maxscrollY;
+		}
+	</script>
+</html>
